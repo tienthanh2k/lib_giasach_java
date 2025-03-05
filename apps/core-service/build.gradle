@@ -1,0 +1,45 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.3.5'
+    id 'io.spring.dependency-management' version '1.1.6'
+}
+
+group = 'com.thanhnt10'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+
+    //Caching
+    //implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    implementation project(':libs:common')
+    //implementation project(':libs:auditlog')
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation "io.jsonwebtoken:jjwt:${jjwtVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-security"
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+bootJar {
+    archiveBaseName.set(project.name)   // Thay thế baseName bằng archiveBaseName
+    archiveVersion.set("")              // Để trống phiên bản (thay thế version = null)
+}
