@@ -9,10 +9,14 @@ import com.thanhnt10.dodobook.apps.core.models.response.TokenServerCreateRespons
 import com.thanhnt10.dodobook.apps.core.models.response.TokenVerifyResponseDto;
 import com.thanhnt10.dodobook.apps.core.service.AuthService;
 import com.thanhnt10.dodobook.common.model.base.Response;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/integration/auth")
@@ -45,5 +49,19 @@ public class AuthController {
     public Response<TokenVerifyResponseDto> verifyToken(
             @RequestBody TokenVerifyRequestDto request) {
         return authService.verifyToken(request);
+    }
+
+    @GetMapping("/roles")
+    public ResponseEntity<List<String>> getUserRoles() {
+        // Lấy danh sách quyền từ Security Context
+        Collection<? extends GrantedAuthority> authorities =
+                SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+
+        // Chuyển đổi danh sách quyền về List<String>
+        List<String> roles = authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(roles);
     }
 }

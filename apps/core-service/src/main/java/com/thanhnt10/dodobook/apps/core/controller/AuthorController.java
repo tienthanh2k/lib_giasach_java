@@ -9,7 +9,13 @@ import com.thanhnt10.dodobook.common.enums.ResponseCode;
 import com.thanhnt10.dodobook.common.model.base.PagingResponseDto;
 import com.thanhnt10.dodobook.common.model.base.Response;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/author")
@@ -23,6 +29,16 @@ public class AuthorController {
     @PreAuthorize("hasAuthority('author:create')")
     @PostMapping("/create")
     public Response<Void> createAuthor(AuthorCreateRequest request) {
+
+        // Lấy danh sách quyền từ Security Context
+        Collection<? extends GrantedAuthority> authorities =
+                SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+
+        // Chuyển đổi danh sách quyền về List<String>
+        List<String> roles = authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
         authorService.create(request);
         return Response.of(ResponseCode.SUCCESS);
     }
