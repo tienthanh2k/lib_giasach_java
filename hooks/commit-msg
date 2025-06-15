@@ -1,0 +1,15 @@
+#!/bin/sh
+
+COMMIT_MSG_FILE=$1
+COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
+
+REGEX="^(feat|fix|docs|style|refactor|test|chore|perf)(\([a-zA-Z0-9_-]+\))?\: .+"
+
+if ! echo "$COMMIT_MSG" | grep -Eq "$REGEX"; then
+  echo "❌ Commit message không đúng chuẩn Conventional Commit!"
+  echo "✅ Ví dụ: VNPMO-123: thêm chức năng đăng nhập"
+  echo "✅ Ví dụ: feature: something"
+  echo "✅ Ví dụ: common: update readme"
+  echo "✅ Ví dụ: uat: deploy uat test"
+  exit 1
+fi
