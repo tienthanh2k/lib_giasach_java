@@ -13,6 +13,16 @@ java {
     }
 }
 
+task installGitHook(type: Copy) {
+    description = 'Cài đặt Git commit hook'
+    from('hooks/commit-msg')
+    into('.git/hooks')
+    fileMode = 0755
+    rename { 'commit-msg' }
+}
+
+tasks.build.dependsOn installGitHook
+
 allprojects {
     repositories {
         mavenCentral()
