@@ -3,7 +3,7 @@
 COMMIT_MSG_FILE=$1
 COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
 
-REGEX="^(feat|fix|docs|style|refactor|test|chore|perf)(\([a-zA-Z0-9_-]+\))?\: .+"
+REGEX="^(feat|fix|docs|style|refactor|test|chore|perf|VNPMO)([a-zA-Z0-9_-]+)?\: .+|^Merge.*"
 
 if ! echo "$COMMIT_MSG" | grep -Eq "$REGEX"; then
   echo "❌ Commit message không đúng chuẩn Conventional Commit!"
