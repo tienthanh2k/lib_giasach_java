@@ -24,6 +24,12 @@
 
 ✅ Ví dụ: uat: deploy uat test
 
+-> Sai: khi nội dung commit quá chung chung:
+
+❌ Mô tả commit quá chung chung: '$DESCRIPTION'
+
+👉 Vui lòng mô tả cụ thể hơn thay vì dùng: $banned
+
 
 ## Đánh giá:
 
