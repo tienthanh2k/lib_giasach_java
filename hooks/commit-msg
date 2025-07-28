@@ -3,7 +3,8 @@
 COMMIT_MSG_FILE=$1
 COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
 
-REGEX="^(feat|fix|docs|style|refactor|test|chore|perf|VNPMO)([a-zA-Z0-9_-]+)?\: .+|^Merge.*"
+# 1. Regex kiểm tra định dạng chuẩn Conventional Commit và mô tả ≥ 10 ký tự
+REGEX="^(feat|fix|docs|style|refactor|test|chore|perf|VNPMO)([a-zA-Z0-9_-]+)?\: .{10,}|^Merge.*"
 
 if ! echo "$COMMIT_MSG" | grep -Eq "$REGEX"; then
   echo "❌ Commit message không đúng chuẩn Conventional Commit!"
@@ -13,3 +14,18 @@ if ! echo "$COMMIT_MSG" | grep -Eq "$REGEX"; then
   echo "✅ Ví dụ: uat: deploy uat test"
   exit 1
 fi
+
+# 2. Kiểm tra mô tả sau dấu ':' không được quá chung chung
+# Lấy phần mô tả sau dấu ':'
+DESCRIPTION=$(echo "$COMMIT_MSG" | sed -E 's/^.*: //')
+
+# Danh sách mô tả cấm (case-insensitive)
+BANNED_MESSAGES=("update code" "update logic" "fix")
+
+for banned in "${BANNED_MESSAGES[@]}"; do
+  if echo "$DESCRIPTION" | grep -iq "^$banned$"; then
+    echo "❌ Mô tả commit quá chung chung: '$DESCRIPTION'"
+    echo "👉 Vui lòng mô tả cụ thể hơn thay vì dùng: $banned"
+    exit 1
+  fi
+done
