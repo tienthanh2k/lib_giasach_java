@@ -3,9 +3,11 @@
 COMMIT_MSG_FILE=$1
 COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
 
-# 1. Kiểm tra mô tả sau dấu ':' không được quá chung chung
-# Lấy phần mô tả sau dấu ':'
+# 1. Kiểm tra mô tả sau dấu ': ' không được quá chung chung
+# Lấy phần mô tả sau dấu ': '
 DESCRIPTION=$(echo "$COMMIT_MSG" | sed -E 's/^.*: //')
+
+echo "Noi dung: '$DESCRIPTION'"
 
 # Danh sách mô tả cấm (case-insensitive)
 BANNED_MESSAGES=("update code" "update logic" "fix")
