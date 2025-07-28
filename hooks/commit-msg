@@ -3,19 +3,7 @@
 COMMIT_MSG_FILE=$1
 COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
 
-# 1. Regex kiểm tra định dạng chuẩn Conventional Commit và mô tả ≥ 10 ký tự
-REGEX="^(feat|fix|docs|style|refactor|test|chore|perf|VNPMO)([a-zA-Z0-9_-]+)?\: .{10,}|^Merge.*"
-
-if ! echo "$COMMIT_MSG" | grep -Eq "$REGEX"; then
-  echo "❌ Commit message không đúng chuẩn Conventional Commit!"
-  echo "✅ Ví dụ: VNPMO-123: thêm chức năng đăng nhập"
-  echo "✅ Ví dụ: feature: something"
-  echo "✅ Ví dụ: common: update readme"
-  echo "✅ Ví dụ: uat: deploy uat test"
-  exit 1
-fi
-
-# 2. Kiểm tra mô tả sau dấu ':' không được quá chung chung
+# 1. Kiểm tra mô tả sau dấu ':' không được quá chung chung
 # Lấy phần mô tả sau dấu ':'
 DESCRIPTION=$(echo "$COMMIT_MSG" | sed -E 's/^.*: //')
 
@@ -29,3 +17,15 @@ for banned in "${BANNED_MESSAGES[@]}"; do
     exit 1
   fi
 done
+
+# 2. Regex kiểm tra định dạng chuẩn Conventional Commit và mô tả ≥ 10 ký tự
+REGEX="^(feat|fix|docs|style|refactor|test|chore|perf|VNPMO)([a-zA-Z0-9_-]+)?\: .{10,}|^Merge.*"
+
+if ! echo "$COMMIT_MSG" | grep -Eq "$REGEX"; then
+  echo "❌ Commit message không đúng chuẩn Conventional Commit!"
+  echo "✅ Ví dụ: VNPMO-123: thêm chức năng đăng nhập"
+  echo "✅ Ví dụ: feature: something"
+  echo "✅ Ví dụ: common: update readme"
+  echo "✅ Ví dụ: uat: deploy uat test"
+  exit 1
+fi
