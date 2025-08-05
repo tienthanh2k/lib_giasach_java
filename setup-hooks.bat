@@ -9,5 +9,7 @@ IF NOT EXIST ".git\hooks" (
 
 copy hooks\commit-msg .git\hooks\commit-msg > nul
 
+copy hooks\post-checkout .git\hooks\post-checkout > nul
+
 echo Git hook installed successfully!
 pause

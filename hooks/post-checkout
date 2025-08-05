@@ -1,0 +1,23 @@
+#!/bin/bash
+
+branch=$(git rev-parse --abbrev-ref HEAD)
+
+if [ "$3" = "1" ]; then
+  if [[ "$branch" == release/* ]]; then
+    echo "[INFO] Bạn đang chuyển sang nhánh: $branch"
+
+    # Fetch master mới nhất từ remote
+    git fetch origin master > /dev/null 2>&1
+
+    # So sánh điểm giao nhau gần nhất giữa nhánh hiện tại và origin/master
+    base=$(git merge-base "$branch" origin/master)
+    latest_master_commit=$(git rev-parse origin/master)
+
+    if [ "$base" != "$latest_master_commit" ]; then
+      echo -e "\033[33m[WARNING] Nhánh $branch chưa chứa commit mới nhất từ origin/master.\033[0m"
+      echo -e "\033[33m[WARNING] Hãy cân nhắc merge hoặc rebase từ origin/master trước khi phát triển!\033[0m"
+    else
+      echo "[OK] Nhánh $branch đã cập nhật commit mới nhất từ origin/master."
+    fi
+  fi
+fi
