@@ -30,6 +30,7 @@
 
 👉 Vui lòng mô tả cụ thể hơn thay vì dùng: $banned
 
+## Bổ sung luồng kiểm tra nhánh release đã có code mới nhất chưa
 
 ## Đánh giá:
 
