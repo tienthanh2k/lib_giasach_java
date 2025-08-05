@@ -32,6 +32,21 @@
 
 ## Bổ sung luồng kiểm tra nhánh release đã có code mới nhất chưa
 
+Nếu nhánh checkout là release/{phiên bản}:
+
+  - ✅ Commit chung với master gần nhất = commit master gần nhất:
+
+  Hiển thị nội dung:
+
+  [OK] Nhánh $branch đã cập nhật commit mới nhất từ origin/master.
+
+
+  - ❌ Commit chung với master gần nhất != commit master gần nhất:
+
+  -> [WARNING] Nhánh release/v1 chưa chứa commit mới nhất từ origin/master.
+
+  [WARNING] Hãy cân nhắc merge hoặc rebase từ origin/master trước khi phát triển!
+
 ## Đánh giá:
 
 ### Ưu điểm:
