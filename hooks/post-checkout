@@ -34,8 +34,11 @@ if [ "$3" = "1" ]; then
 
 	# Kiểm tra nếu prev_branch tồn tại trên remote
     git fetch origin "$prev_branch" 2>/dev/null
+	echo "fetch nhánh '$prev_branch' from origin."
 
+	# Kiểm tra prev_branch tồn tại trên remote, kiểm tra xem có cần merge không
 	if git show-ref --verify --quiet "refs/remotes/origin/$prev_branch"; then
+		echo "Nhánh '$prev_branch' tồn tại, tiếp tục xử lý."
 		# So sánh prev_head và new_head
 		if [ "$prev_head" = "$new_head" ]; then
 			# Kiểm tra xem local nhánh trước có khác so với remote không
