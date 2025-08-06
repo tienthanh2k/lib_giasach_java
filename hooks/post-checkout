@@ -14,7 +14,8 @@ if [ "$3" = "1" ]; then
     new_branch=$(git rev-parse --abbrev-ref HEAD)
 
     # Lấy tên branch trước đó (trích từ HEAD cũ)
-    prev_branch=$(git name-rev --name-only "$1" | cut -d'^' -f1)
+    # prev_branch=$(git name-rev --name-only "$1" | cut -d'^' -f1)
+	prev_branch=$(git branch --contains "$prev_head" | grep -v 'detached' | grep -v '^\*' | head -1 | sed 's/^[[:space:]]*//')
 
 	echo "Checkout từ nhánh $prev_branch sang nhánh $new_branch"
 
