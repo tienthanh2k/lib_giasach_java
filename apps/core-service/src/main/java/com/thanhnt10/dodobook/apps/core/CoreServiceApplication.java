@@ -21,6 +21,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 public class CoreServiceApplication {
     public static void main(String[] args) {
         // Comment
+        // comment 2
         SpringApplication.run(CoreServiceApplication.class, args);
     }
 }
