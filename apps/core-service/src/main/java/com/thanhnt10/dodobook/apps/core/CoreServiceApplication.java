@@ -22,6 +22,7 @@ public class CoreServiceApplication {
     public static void main(String[] args) {
         // Comment
         // comment 2
+        // Comment 3
         SpringApplication.run(CoreServiceApplication.class, args);
     }
 }
