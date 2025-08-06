@@ -29,23 +29,29 @@ if [ "$3" = "1" ]; then
     fi
 
     # Fetch bản mới nhất từ remote cho nhánh trước đó
-    git fetch origin "$prev_branch"
 
-	# So sánh prev_head và new_head
-	if [ "$prev_head" = "$new_head" ]; then
-		# Kiểm tra xem local nhánh trước có khác so với remote không
-		local_commit=$(git rev-parse "$prev_branch")
-		remote_commit=$(git rev-parse "origin/$prev_branch")
+	# Kiểm tra nếu prev_branch tồn tại trên remote
+    git fetch origin "$prev_branch" 2>/dev/null
 
-		if [ "$local_commit" != "$remote_commit" ]; then
-			echo "[post-checkout hook] Nhánh '$prev_branch' chưa phải commit mới nhất. Thực hiện merge vào '$new_branch'..."
-			# Merge thay vì pull để rõ ràng
-			git merge "origin/$prev_branch" --no-edit
-			# Nếu muốn pull đầy đủ (bao gồm cả rebase hoặc fetch + merge)
-			# git pull origin "$prev_branch"
-		else
-			echo "[post-checkout hook] Nhánh '$prev_branch' đã up-to-date."
+	if git show-ref --verify --quiet "refs/remotes/origin/$prev_branch"; then
+		# So sánh prev_head và new_head
+		if [ "$prev_head" = "$new_head" ]; then
+			# Kiểm tra xem local nhánh trước có khác so với remote không
+			local_commit=$(git rev-parse "$prev_branch")
+			remote_commit=$(git rev-parse "origin/$prev_branch")
+
+			if [ "$local_commit" != "$remote_commit" ]; then
+				echo "[post-checkout hook] Nhánh '$prev_branch' chưa phải commit mới nhất. Thực hiện merge vào '$new_branch'..."
+				# Merge thay vì pull để rõ ràng
+				git merge "origin/$prev_branch" --no-edit
+				# Nếu muốn pull đầy đủ (bao gồm cả rebase hoặc fetch + merge)
+				# git pull origin "$prev_branch"
+			else
+				echo "[post-checkout hook] Nhánh '$prev_branch' đã up-to-date."
+			fi
 		fi
 	fi
+
+	
 
 fi
