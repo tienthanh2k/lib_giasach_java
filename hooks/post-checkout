@@ -1,23 +1,40 @@
 #!/bin/bash
 
-branch=$(git rev-parse --abbrev-ref HEAD)
+# $1 - previous HEAD (commit hash)
+# $2 - new HEAD (commit hash)
+# $3 - 1 nếu là branch checkout, 0 nếu là file checkout
 
 if [ "$3" = "1" ]; then
-  if [[ "$branch" == release/* ]]; then
-    echo "[INFO] Bạn đang chuyển sang nhánh: $branch"
+    new_branch=$(git rev-parse --abbrev-ref HEAD)
+    prev_branch=$(git name-rev --name-only "$1" | cut -d'^' -f1)
 
-    # Fetch master mới nhất từ remote
-    git fetch origin master > /dev/null 2>&1
-
-    # So sánh điểm giao nhau gần nhất giữa nhánh hiện tại và origin/master
-    base=$(git merge-base "$branch" origin/master)
-    latest_master_commit=$(git rev-parse origin/master)
-
-    if [ "$base" != "$latest_master_commit" ]; then
-      echo -e "\033[33m[WARNING] Nhánh $branch chưa chứa commit mới nhất từ origin/master.\033[0m"
-      echo -e "\033[33m[WARNING] Hãy cân nhắc merge hoặc rebase từ origin/master trước khi phát triển!\033[0m"
-    else
-      echo "[OK] Nhánh $branch đã cập nhật commit mới nhất từ origin/master."
+    if [[ "$prev_branch" == "HEAD" ]]; then
+        exit 0
     fi
-  fi
+
+    echo "[post-checkout hook] Đã chuyển từ '$prev_branch' sang '$new_branch'."
+
+    # Phần 1: Kiểm tra nếu prev_branch tồn tại trên remote
+    git fetch origin "$prev_branch" 2>/dev/null
+
+    if git show-ref --verify --quiet "refs/remotes/origin/$prev_branch"; then
+        local_commit=$(git rev-parse "$prev_branch")
+        remote_commit=$(git rev-parse "origin/$prev_branch")
+
+        if [ "$local_commit" != "$remote_commit" ]; then
+            echo "[post-checkout hook] '$prev_branch' chưa up-to-date. Merge 'origin/$prev_branch' vào '$new_branch'..."
+            git merge "origin/$prev_branch" --no-edit
+        else
+            echo "[post-checkout hook] '$prev_branch' đã là bản mới nhất."
+        fi
+    else
+        echo "[post-checkout hook] Nhánh '$prev_branch' chưa tồn tại trên remote. Bỏ qua so sánh."
+    fi
+
+    # Phần 2: Nếu nhánh mới là release/*
+    if [[ "$new_branch" == release/* ]]; then
+        echo "[post-checkout hook] Nhánh mới là '$new_branch'. Merge thêm 'origin/master' vào..."
+        git fetch origin master
+        git merge origin/master --no-edit
+    fi
 fi
